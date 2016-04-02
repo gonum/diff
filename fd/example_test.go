@@ -9,6 +9,7 @@ import (
 	"math"
 
 	"github.com/gonum/diff/fd"
+	"github.com/gonum/matrix/mat64"
 )
 
 func ExampleDerivative() {
@@ -43,4 +44,25 @@ func ExampleDerivative() {
 	// f'(0) ≈ 1
 	// f'(0) ≈ 0.9999998333333416
 	// f''(0) ≈ -2.999999981767587
+}
+
+func ExampleJacobian() {
+	f := func(y, x []float64) {
+		y[0] = x[0] + 1
+		y[1] = 5 * x[2]
+		y[2] = 4*x[1]*x[1] - 2*x[2]
+		y[3] = x[2] * math.Sin(x[0])
+	}
+	x := []float64{1, 2, 3}
+	jac := fd.Jacobian(nil, f, 4, x, &fd.JacobianSettings{
+		Formula:    fd.Central,
+		Concurrent: true,
+	})
+	fmt.Printf("J ≈ %v\n", mat64.Formatted(jac, mat64.Prefix("    ")))
+
+	// Output:
+	// J ≈ ⎡ 0.9999999999917482                    0                    0⎤
+	//     ⎢                  0                    0    4.999999999810711⎥
+	//     ⎢                  0   15.999999999719941  -1.9999999999834963⎥
+	//     ⎣ 1.6209069175765478                    0   0.8414709847803792⎦
 }
