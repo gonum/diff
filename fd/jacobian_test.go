@@ -56,6 +56,60 @@ func vecFunc43Jac(jac *mat64.Dense, x []float64) {
 
 func TestJacobian(t *testing.T) {
 	rand.Seed(1)
+
+	// Test with default settings.
+	for tc, test := range []struct {
+		m, n int
+		f    func([]float64, []float64)
+		jac  func(*mat64.Dense, []float64)
+	}{
+		{
+			m:   1,
+			n:   3,
+			f:   vecFunc13,
+			jac: vecFunc13Jac,
+		},
+		{
+			m:   2,
+			n:   2,
+			f:   vecFunc22,
+			jac: vecFunc22Jac,
+		},
+		{
+			m:   4,
+			n:   3,
+			f:   vecFunc43,
+			jac: vecFunc43Jac,
+		},
+	} {
+		const tol = 1e-6
+
+		x := randomSlice(test.n, 10)
+		xcopy := make([]float64, test.n)
+		copy(xcopy, x)
+
+		want := mat64.NewDense(test.m, test.n, nil)
+		test.jac(want, x)
+
+		got := Jacobian(nil, test.f, test.m, x, nil)
+		if !mat64.EqualApprox(want, got, tol) {
+			t.Errorf("Case %d (nil dst, default settings): unexpected Jacobian. want %v, got %v", tc, want, got)
+		}
+		if !floats.Equal(x, xcopy) {
+			t.Errorf("Case %d (nil dst, default settings): x modified", tc)
+		}
+
+		fillNaN(got)
+		Jacobian(got, test.f, test.m, x, nil)
+		if !mat64.EqualApprox(want, got, tol) {
+			t.Errorf("Case %d (default settings): unexpected Jacobian.\nwant %v\ngot  %v", tc, want, got)
+		}
+		if !floats.Equal(x, xcopy) {
+			t.Errorf("Case %d (default settings): x modified", tc)
+		}
+	}
+
+	// Test with non-default settings.
 	for tc, test := range []struct {
 		m, n    int
 		f       func([]float64, []float64)
@@ -68,7 +122,7 @@ func TestJacobian(t *testing.T) {
 			n:       3,
 			f:       vecFunc13,
 			jac:     vecFunc13Jac,
-			tol:     1e-7,
+			tol:     1e-6,
 			formula: Forward,
 		},
 		{
@@ -76,7 +130,7 @@ func TestJacobian(t *testing.T) {
 			n:       3,
 			f:       vecFunc13,
 			jac:     vecFunc13Jac,
-			tol:     1e-7,
+			tol:     1e-6,
 			formula: Backward,
 		},
 		{
@@ -84,7 +138,7 @@ func TestJacobian(t *testing.T) {
 			n:       3,
 			f:       vecFunc13,
 			jac:     vecFunc13Jac,
-			tol:     1e-10,
+			tol:     1e-9,
 			formula: Central,
 		},
 		{
@@ -92,7 +146,7 @@ func TestJacobian(t *testing.T) {
 			n:       2,
 			f:       vecFunc22,
 			jac:     vecFunc22Jac,
-			tol:     1e-7,
+			tol:     1e-6,
 			formula: Forward,
 		},
 		{
@@ -100,7 +154,7 @@ func TestJacobian(t *testing.T) {
 			n:       2,
 			f:       vecFunc22,
 			jac:     vecFunc22Jac,
-			tol:     1e-7,
+			tol:     1e-6,
 			formula: Backward,
 		},
 		{
@@ -108,7 +162,7 @@ func TestJacobian(t *testing.T) {
 			n:       2,
 			f:       vecFunc22,
 			jac:     vecFunc22Jac,
-			tol:     1e-10,
+			tol:     1e-9,
 			formula: Central,
 		},
 		{
@@ -116,7 +170,7 @@ func TestJacobian(t *testing.T) {
 			n:       3,
 			f:       vecFunc43,
 			jac:     vecFunc43Jac,
-			tol:     1e-7,
+			tol:     1e-6,
 			formula: Forward,
 		},
 		{
@@ -124,7 +178,7 @@ func TestJacobian(t *testing.T) {
 			n:       3,
 			f:       vecFunc43,
 			jac:     vecFunc43Jac,
-			tol:     1e-7,
+			tol:     1e-6,
 			formula: Backward,
 		},
 		{
@@ -132,7 +186,7 @@ func TestJacobian(t *testing.T) {
 			n:       3,
 			f:       vecFunc43,
 			jac:     vecFunc43Jac,
-			tol:     1e-10,
+			tol:     1e-9,
 			formula: Central,
 		},
 	} {
