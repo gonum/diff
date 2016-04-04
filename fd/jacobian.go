@@ -46,12 +46,12 @@ func Jacobian(dst *mat64.Dense, f func(y, x []float64), m int, x []float64, sett
 	if r != m || c != n {
 		panic("jacobian: mismatched matrix size")
 	}
-	if settings.OriginValue != nil && len(settings.OriginValue) != m {
-		panic("jacobian: mismatched OriginValue slice length")
-	}
 
 	if settings == nil {
 		settings = &JacobianSettings{}
+	}
+	if settings.OriginValue != nil && len(settings.OriginValue) != m {
+		panic("jacobian: mismatched OriginValue slice length")
 	}
 
 	formula := settings.Formula
