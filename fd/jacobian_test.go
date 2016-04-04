@@ -93,7 +93,8 @@ func TestJacobian(t *testing.T) {
 
 		got := Jacobian(nil, test.f, test.m, x, nil)
 		if !mat64.EqualApprox(want, got, tol) {
-			t.Errorf("Case %d (nil dst, default settings): unexpected Jacobian. want %v, got %v", tc, want, got)
+			t.Errorf("Case %d (nil dst, default settings): unexpected Jacobian.\nwant: %v\ngot:  %v",
+				tc, mat64.Formatted(want, mat64.Prefix("      ")), mat64.Formatted(got, mat64.Prefix("      ")))
 		}
 		if !floats.Equal(x, xcopy) {
 			t.Errorf("Case %d (nil dst, default settings): x modified", tc)
@@ -102,7 +103,8 @@ func TestJacobian(t *testing.T) {
 		fillNaN(got)
 		Jacobian(got, test.f, test.m, x, nil)
 		if !mat64.EqualApprox(want, got, tol) {
-			t.Errorf("Case %d (default settings): unexpected Jacobian.\nwant %v\ngot  %v", tc, want, got)
+			t.Errorf("Case %d (default settings): unexpected Jacobian.\nwant: %v\ngot:  %v",
+				tc, mat64.Formatted(want, mat64.Prefix("      ")), mat64.Formatted(got, mat64.Prefix("      ")))
 		}
 		if !floats.Equal(x, xcopy) {
 			t.Errorf("Case %d (default settings): x modified", tc)
@@ -201,7 +203,8 @@ func TestJacobian(t *testing.T) {
 			Formula: test.formula,
 		})
 		if !mat64.EqualApprox(want, got, test.tol) {
-			t.Errorf("Case %d (nil dst): unexpected Jacobian. want %v, got %v", tc, want, got)
+			t.Errorf("Case %d (nil dst): unexpected Jacobian.\nwant: %v\ngot:  %v",
+				tc, mat64.Formatted(want, mat64.Prefix("      ")), mat64.Formatted(got, mat64.Prefix("      ")))
 		}
 		if !floats.Equal(x, xcopy) {
 			t.Errorf("Case %d (nil dst): x modified", tc)
@@ -212,7 +215,8 @@ func TestJacobian(t *testing.T) {
 			Formula: test.formula,
 		})
 		if !mat64.EqualApprox(want, got, test.tol) {
-			t.Errorf("Case %d: unexpected Jacobian", tc)
+			t.Errorf("Case %d: unexpected Jacobian.\nwant: %v\ngot:  %v",
+				tc, mat64.Formatted(want, mat64.Prefix("      ")), mat64.Formatted(got, mat64.Prefix("      ")))
 		}
 		if !floats.Equal(x, xcopy) {
 			t.Errorf("Case %d: x modified", tc)
@@ -224,7 +228,8 @@ func TestJacobian(t *testing.T) {
 			Concurrent: true,
 		})
 		if !mat64.EqualApprox(want, got, test.tol) {
-			t.Errorf("Case %d (concurrent): unexpected Jacobian", tc)
+			t.Errorf("Case %d (concurrent): unexpected Jacobian.\nwant: %v\ngot:  %v",
+				tc, mat64.Formatted(want, mat64.Prefix("      ")), mat64.Formatted(got, mat64.Prefix("      ")))
 		}
 		if !floats.Equal(x, xcopy) {
 			t.Errorf("Case %d (concurrent): x modified", tc)
@@ -238,7 +243,8 @@ func TestJacobian(t *testing.T) {
 			OriginValue: origin,
 		})
 		if !mat64.EqualApprox(want, got, test.tol) {
-			t.Errorf("Case %d (origin): unexpected Jacobian", tc)
+			t.Errorf("Case %d (origin): unexpected Jacobian.\nwant: %v\ngot:  %v",
+				tc, mat64.Formatted(want, mat64.Prefix("      ")), mat64.Formatted(got, mat64.Prefix("      ")))
 		}
 		if !floats.Equal(x, xcopy) {
 			t.Errorf("Case %d (origin): x modified", tc)
@@ -251,7 +257,8 @@ func TestJacobian(t *testing.T) {
 			Concurrent:  true,
 		})
 		if !mat64.EqualApprox(want, got, test.tol) {
-			t.Errorf("Case %d (concurrent, origin): unexpected Jacobian", tc)
+			t.Errorf("Case %d (concurrent, origin): unexpected Jacobian.\nwant: %v\ngot:  %v",
+				tc, mat64.Formatted(want, mat64.Prefix("      ")), mat64.Formatted(got, mat64.Prefix("      ")))
 		}
 		if !floats.Equal(x, xcopy) {
 			t.Errorf("Case %d (concurrent, origin): x modified", tc)
